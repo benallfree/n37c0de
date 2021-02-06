@@ -1,7 +1,13 @@
 import { BufferList } from 'bl'
 import { callem } from 'callem'
-import { SchemaLookup } from '.'
-import { binpack, Binpacker, BinpackStruct, binunpack, Schema } from './binpack'
+import { MessageTypes, SchemaLookup } from '.'
+import {
+  binpack,
+  BinpackStruct,
+  binunpack,
+  NetcodeTypes,
+  Schema,
+} from './binpack'
 
 export const MAGIC_SIZE = 2
 export const LENGTH_SIZE = 2
@@ -13,8 +19,8 @@ export type TransportPackerConfig = {
   magic: number
 }
 
-export const createTransportPacker = <TSchema extends SchemaLookup>(
-  schemas: TSchema,
+export const createTransportPacker = <TMessageTypes extends MessageTypes>(
+  schemas: SchemaLookup,
   config?: Partial<TransportPackerConfig>
 ) => {
   const _config: TransportPackerConfig = {
@@ -35,18 +41,18 @@ export const createTransportPacker = <TSchema extends SchemaLookup>(
   }
 
   const MessageWrapperHeaderSchema: Schema<Header> = {
-    magic: Binpacker.Uint16,
-    length: Binpacker.Uint16,
-    id: Binpacker.Uint32,
-    refId: Binpacker.Uint32,
-    type: Binpacker.Uint8,
+    magic: NetcodeTypes.Uint16,
+    length: NetcodeTypes.Uint16,
+    id: NetcodeTypes.Uint32,
+    refId: NetcodeTypes.Uint32,
+    type: NetcodeTypes.Uint8,
   }
 
   const { magic } = _config
 
   let messageId = 0
 
-  const assertSchemaExists = (type: keyof TSchema) => {
+  const assertSchemaExists = (type: keyof TMessageTypes) => {
     if (!(type in schemas)) {
       throw new Error(
         `Schema '${type}' does not exist. Did you forget to add it?`
@@ -55,7 +61,7 @@ export const createTransportPacker = <TSchema extends SchemaLookup>(
   }
 
   const pack = <TMessage extends BinpackStruct>(
-    type: keyof TSchema,
+    type: keyof TMessageTypes,
     message: TMessage,
     refId = 0
   ): [Buffer, Wrapper<TMessage>] => {

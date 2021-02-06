@@ -42,7 +42,7 @@ export type Packer<
   typecheck: (v: any) => boolean
 }
 
-export const Binpacker: {
+export const NetcodeTypes: {
   Uint8: Packer<number>
   Uint16: Packer<number>
   Uint32: Packer<number>

@@ -22,7 +22,7 @@
     "url": "https://github.com/benallfree/n37c0d3"
   },
   "scripts": {
-    "publish:dry": "pnpm clean && pnpm build && pnpm publish --dry-run",
+    "publish:dry": "pnpm clean && pnpm build && pnpm publish --dry-run --no-git-checks",
     "publish:real": "pnpm clean && pnpm build && pnpm publish",
     "clean": "rimraf dist",
     "build": "tsc",

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SmartBuffer } from 'smart-buffer'
-import { binpack, Binpacker, binunpack, Schema } from '../binpack'
+import { binpack, binunpack, NetcodeTypes, Schema } from '../binpack'
 
 type NearbyCH = {
   latitude: number
@@ -12,9 +12,9 @@ type NearbyCH = {
 
 describe('it can binpack', () => {
   test('a uint8', () => {
-    const packed = Binpacker.Uint8.pack(42, new SmartBuffer())
+    const packed = NetcodeTypes.Uint8.pack(42, new SmartBuffer())
     expect(packed.length).toBe(1)
-    expect(Binpacker.Uint8.unpack(packed)).toBe(42)
+    expect(NetcodeTypes.Uint8.unpack(packed)).toBe(42)
   })
 
   test('a schema with a uint8', () => {
@@ -23,7 +23,7 @@ describe('it can binpack', () => {
     }
     type T = typeof data
     const schema: Schema<T> = {
-      baz: Binpacker.Uint8,
+      baz: NetcodeTypes.Uint8,
     }
 
     const packed = binpack(schema, data)
@@ -38,7 +38,7 @@ describe('it can binpack', () => {
     }
     type T = typeof data
     const schema: Schema<T> = {
-      baz: Binpacker.Uint16,
+      baz: NetcodeTypes.Uint16,
     }
 
     const packed = binpack(schema, data)
@@ -54,7 +54,7 @@ describe('it can binpack', () => {
 
     type T = typeof data
     const schema: Schema<T> = {
-      baz: Binpacker.String,
+      baz: NetcodeTypes.String,
     }
 
     const packed = binpack(schema, data)
@@ -70,7 +70,7 @@ describe('it can binpack', () => {
 
     type T = typeof data
     const schema: Schema<T> = {
-      baz: Binpacker.SmartBuffer,
+      baz: NetcodeTypes.SmartBuffer,
     }
 
     const packed = binpack(schema, data)
@@ -89,9 +89,9 @@ describe('it can binpack', () => {
 
     type T = typeof data
     const schema: Schema<T> = {
-      baz: Binpacker.Uint8,
+      baz: NetcodeTypes.Uint8,
       foo: {
-        zab: Binpacker.Uint8,
+        zab: NetcodeTypes.Uint8,
       },
     }
 
@@ -108,7 +108,7 @@ describe('it can binpack', () => {
     }
     type T = typeof data
     const schema: Schema<T> = {
-      baz: [Binpacker.Uint8],
+      baz: [NetcodeTypes.Uint8],
     }
 
     const packed = binpack(schema, data)
@@ -126,7 +126,7 @@ describe('it can binpack', () => {
     }
     type T = typeof data
     const schema: Schema<T> = {
-      baz: { zab: [Binpacker.Uint8] },
+      baz: { zab: [NetcodeTypes.Uint8] },
     }
 
     const packed = binpack(schema, data)
@@ -145,10 +145,10 @@ describe('it can binpack', () => {
       message: {
         nearby: [
           {
-            latitude: Binpacker.Float,
-            key: Binpacker.String,
-            longitude: Binpacker.Float,
-            hash: Binpacker.Uint32,
+            latitude: NetcodeTypes.Float,
+            key: NetcodeTypes.String,
+            longitude: NetcodeTypes.Float,
+            hash: NetcodeTypes.Uint32,
           },
         ],
       },
@@ -169,10 +169,10 @@ describe('it can binpack', () => {
     const schema: Schema<T> = {
       message: {
         nearby: {
-          latitude: Binpacker.Float,
-          key: Binpacker.String,
-          longitude: Binpacker.Float,
-          hash: Binpacker.Uint32,
+          latitude: NetcodeTypes.Float,
+          key: NetcodeTypes.String,
+          longitude: NetcodeTypes.Float,
+          hash: NetcodeTypes.Uint32,
         },
       },
     }
@@ -193,10 +193,10 @@ describe('it can binpack', () => {
 
         nearby: [
           {
-            latitude: Binpacker.Float,
-            key: Binpacker.String,
-            longitude: Binpacker.Float,
-            hash: Binpacker.Uint32,
+            latitude: NetcodeTypes.Float,
+            key: NetcodeTypes.String,
+            longitude: NetcodeTypes.Float,
+            hash: NetcodeTypes.Uint32,
           },
         ],
       },
@@ -213,7 +213,7 @@ describe('it can binpack', () => {
     type T = typeof data
     const schema: Schema<T> = {
       //@ts-ignore
-      foo: { baz: Binpacker.String },
+      foo: { baz: NetcodeTypes.String },
     }
 
     expect(() => binpack(schema, data)).toThrowError(
@@ -227,7 +227,7 @@ describe('it can binpack', () => {
     type T = typeof data
     const schema: Schema<T> = {
       //@ts-ignore
-      foo: [Binpacker.Uint32],
+      foo: [NetcodeTypes.Uint32],
     }
 
     expect(() => binpack(schema, data)).toThrowError(
@@ -241,7 +241,7 @@ describe('it can binpack', () => {
     type T = typeof data
     const schema: Schema<T> = {
       //@ts-ignore
-      foo: Binpacker.Uint32,
+      foo: NetcodeTypes.Uint32,
     }
 
     expect(() => binpack(schema, data)).toThrowError(
@@ -255,7 +255,7 @@ describe('it can binpack', () => {
     type T = typeof data
     const schema: Schema<T> = {
       //@ts-ignore
-      foo: [Binpacker.String],
+      foo: [NetcodeTypes.String],
     }
 
     expect(() => binpack(schema, data)).toThrowError(
@@ -269,7 +269,7 @@ describe('it can binpack', () => {
     type T = typeof data
     const schema: Schema<T> = {
       //@ts-ignore
-      foo: Binpacker.String,
+      foo: NetcodeTypes.String,
     }
 
     expect(() => binpack(schema, data)).toThrowError(
@@ -283,7 +283,7 @@ describe('it can binpack', () => {
     }
     type T = typeof data
     const schema: Schema<T> = {
-      baz: [{ foo: Binpacker.Uint8 }],
+      baz: [{ foo: NetcodeTypes.Uint8 }],
     }
 
     const packed = binpack(schema, data)
