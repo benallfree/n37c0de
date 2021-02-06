@@ -1,6 +1,6 @@
 import { BufferList } from 'bl'
 import { callem } from 'callem'
-import { MessageTypes, SchemaLookup } from '.'
+import { SchemaLookup } from '.'
 import {
   binpack,
   BinpackStruct,
@@ -19,7 +19,7 @@ export type TransportPackerConfig = {
   magic: number
 }
 
-export const createTransportPacker = <TMessageTypes extends MessageTypes>(
+export const createTransportPacker = <TMessageTypes>(
   schemas: SchemaLookup,
   config?: Partial<TransportPackerConfig>
 ) => {
@@ -52,7 +52,7 @@ export const createTransportPacker = <TMessageTypes extends MessageTypes>(
 
   let messageId = 0
 
-  const assertSchemaExists = (type: keyof TMessageTypes) => {
+  const assertSchemaExists = (type: number) => {
     if (!(type in schemas)) {
       throw new Error(
         `Schema '${type}' does not exist. Did you forget to add it?`
@@ -61,7 +61,7 @@ export const createTransportPacker = <TMessageTypes extends MessageTypes>(
   }
 
   const pack = <TMessage extends BinpackStruct>(
-    type: keyof TMessageTypes,
+    type: number,
     message: TMessage,
     refId = 0
   ): [Buffer, Wrapper<TMessage>] => {
@@ -69,7 +69,7 @@ export const createTransportPacker = <TMessageTypes extends MessageTypes>(
     type ThisMessageWrapper = Wrapper<TMessage>
     const wrapperSchema: Schema<Wrapper<TMessage>> = {
       ...MessageWrapperHeaderSchema,
-      message: schemas[type] as Schema<TMessage>,
+      message: schemas[type as number] as Schema<TMessage>,
     }
 
     const wrapper: ThisMessageWrapper = {

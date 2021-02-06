@@ -1,6 +1,7 @@
 import { BinpackStruct, Schema } from './binpack'
 import { createTransportPacker } from './transport'
 
+export { NetcodeTypes } from './binpack'
 export * from './transport'
 
 export type SchemaLookup = {
