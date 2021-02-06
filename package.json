@@ -22,6 +22,8 @@
     "url": "https://github.com/benallfree/n37c0d3"
   },
   "scripts": {
+    "publish:dry": "pnpm clean && pnpm build && pnpm publish --dry-run",
+    "publish:real": "pnpm clean && pnpm build && pnpm publish",
     "clean": "rimraf dist",
     "build": "tsc",
     "lint": "prettier -c ./src/**/*.ts",
