@@ -50,11 +50,13 @@ const SessionSchema = {
 Finally, create a schema map that associates message type IDs with the schemas.
 
 ```typescript
-const LOGIN = 1
-const SESSION = 2
-export const schemas: SchemaLookup = {
-  [LOGIN]: LoginSchema,
-  [SESSION]: SessionSchema,
+enum MessageTypes {
+  Login = 1,
+  Session = 2,
+}
+const schemas: SchemaLookup = {
+  [MessageTypes.Login]: LoginSchema,
+  [MessageTypes.Session]: SessionSchema,
 }
 ```
 
@@ -62,10 +64,8 @@ Now you can pack and unpack your message types at will!
 
 ```typescript
 const { pack, unpack } = createNetcode(schemas)
-const [packed] = pack(LOGIN, data)
-expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 4)
+const [packed] = pack<Login>(MessageTypes.Login, data)
 const unpacked = unpack<Login>(packed)
-
 ```
 
 # Prior Art
