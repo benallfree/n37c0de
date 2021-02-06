@@ -1,5 +1,5 @@
 import { SchemaLookup } from '..'
-import { NetcodeTypes } from '../binpack'
+import { NetcodeTypes, Schema } from '../binpack'
 
 export type LoginRequest = {
   idToken: string
@@ -11,9 +11,12 @@ export const LoginRequestSchema = {
 
 export type Session = {
   uid: string
+  previousNames: { name: string }[]
 }
-export const SessionSchema = {
+
+export const SessionSchema: Schema<Session> = {
   uid: NetcodeTypes.String,
+  previousNames: [{ name: NetcodeTypes.String }],
 }
 
 export enum MessageTypes {

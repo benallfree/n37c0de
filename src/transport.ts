@@ -19,6 +19,18 @@ export type TransportPackerConfig = {
   magic: number
 }
 
+export type MessageHeader = {
+  magic: number
+  length: number
+  id: number
+  refId: number
+  type: number
+}
+
+export type MessageWrapper<TMessage extends BinpackStruct> = MessageHeader & {
+  message: TMessage
+}
+
 export const createTransportPacker = <TMessageTypes>(
   schemas: SchemaLookup,
   config?: Partial<TransportPackerConfig>
@@ -28,19 +40,7 @@ export const createTransportPacker = <TMessageTypes>(
     ...config,
   }
 
-  type Header = {
-    magic: number
-    length: number
-    id: number
-    refId: number
-    type: number
-  }
-
-  type Wrapper<TMessage extends BinpackStruct> = Header & {
-    message: TMessage
-  }
-
-  const MessageWrapperHeaderSchema: Schema<Header> = {
+  const MessageWrapperHeaderSchema: Schema<MessageHeader> = {
     magic: NetcodeTypes.Uint16,
     length: NetcodeTypes.Uint16,
     id: NetcodeTypes.Uint32,
@@ -64,10 +64,10 @@ export const createTransportPacker = <TMessageTypes>(
     type: number,
     message: TMessage,
     refId = 0
-  ): [Buffer, Wrapper<TMessage>] => {
+  ): [Buffer, MessageWrapper<TMessage>] => {
     assertSchemaExists(type)
-    type ThisMessageWrapper = Wrapper<TMessage>
-    const wrapperSchema: Schema<Wrapper<TMessage>> = {
+    type ThisMessageWrapper = MessageWrapper<TMessage>
+    const wrapperSchema: Schema<MessageWrapper<TMessage>> = {
       ...MessageWrapperHeaderSchema,
       message: schemas[type as number] as Schema<TMessage>,
     }
@@ -87,7 +87,7 @@ export const createTransportPacker = <TMessageTypes>(
   }
 
   const unpack = <TMessage extends BinpackStruct>(packed: Buffer) => {
-    const header = binunpack<Header>(MessageWrapperHeaderSchema, packed)
+    const header = binunpack<MessageHeader>(MessageWrapperHeaderSchema, packed)
     const { type } = header
     const messageSchema = schemas[type] as Schema<TMessage>
     const message = binunpack<TMessage>(
@@ -95,7 +95,7 @@ export const createTransportPacker = <TMessageTypes>(
       packed.slice(MESSAGE_WRAPPER_HEADER_LENGTH)
     )
 
-    return { ...header, message } as Wrapper<TMessage>
+    return { ...header, message } as MessageWrapper<TMessage>
   }
 
   const isMessageStart = (buf: Buffer | BufferList, offset = 0) => {
@@ -105,7 +105,7 @@ export const createTransportPacker = <TMessageTypes>(
 
   const dataBuf = new BufferList()
 
-  const [onRawMessage, emitRawMessage] = callem<Wrapper<BinpackStruct>>()
+  const [onRawMessage, emitRawMessage] = callem<MessageWrapper<BinpackStruct>>()
 
   const fastForwardToMagic = () => {
     if (dataBuf.length === 0) return
@@ -123,7 +123,7 @@ export const createTransportPacker = <TMessageTypes>(
 
   const handleSocketDataEvent = (
     data: Buffer
-  ): Wrapper<BinpackStruct> | void => {
+  ): MessageWrapper<BinpackStruct> | void => {
     dataBuf.append(data)
     fastForwardToMagic()
     console.log('mem used', dataBuf.length)

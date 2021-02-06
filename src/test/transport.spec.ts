@@ -44,10 +44,11 @@ describe('it can netmsg', () => {
   test('wrap a LoginReply', () => {
     const data: Session = {
       uid: 'baz',
+      previousNames: [],
     }
     const { pack, unpack } = createNetcode(schemas)
     const [packed] = pack(MessageTypes.Session, data, 42)
-    expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 4)
+    expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 6)
     const unpacked = unpack<Session>(packed)
     expect(unpacked.message.uid).toBe('baz')
     expect(unpacked.refId).toBe(42)
@@ -56,10 +57,11 @@ describe('it can netmsg', () => {
   test('expect length to be correct', () => {
     const data: Session = {
       uid: 'baz',
+      previousNames: [],
     }
     const { pack, unpack } = createNetcode(schemas)
     const [packed, certified] = pack(MessageTypes.Session, data, 42)
-    expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 4)
+    expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 6)
     expect(certified.length).toBe(packed.length)
   })
 })
