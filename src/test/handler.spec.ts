@@ -3,7 +3,12 @@
 import { createNetcode } from '..'
 import { binpack, BinpackStruct } from '../binpack'
 import { MESSAGE_WRAPPER_HEADER_LENGTH } from '../transport'
-import { LOGIN, LoginRequest, LoginRequestSchema, schemas } from './types'
+import {
+  LoginRequest,
+  LoginRequestSchema,
+  MessageTypes,
+  schemas,
+} from './types'
 
 describe('it can receive messages', () => {
   test('byte stream with invalid start is discarded', () => {
@@ -26,7 +31,7 @@ describe('it can receive messages', () => {
     const transport = createNetcode(schemas)
     const { pack, handleSocketDataEvent } = transport
 
-    const [packed] = pack(LOGIN, data)
+    const [packed] = pack(MessageTypes.Login, data)
     expect(packed.length).toBe(MESSAGE_WRAPPER_HEADER_LENGTH + 4)
 
     const res = handleSocketDataEvent(packed)
