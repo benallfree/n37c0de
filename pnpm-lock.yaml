@@ -2,7 +2,7 @@ dependencies:
   '@types/jest': 26.0.20
   '@types/node': 14.14.22
   bl: 4.0.4
-  callem: link:../../../../../Users/meta/.nvm/versions/node/v12.14.1/pnpm-global/node_modules/callem
+  callem: link:../callem
   georedis: github.com/benallfree/node-georedis/767652a2ff81cc3d7ffe72ae019f9f4d0d9a15fe
   smart-buffer: 4.1.0
 devDependencies:
