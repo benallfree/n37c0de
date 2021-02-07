@@ -26,6 +26,7 @@
     "publish:real": "pnpm clean && pnpm build && pnpm publish",
     "clean": "rimraf dist",
     "build": "tsc",
+    "build:clean": "pnpm clean && pnpm build",
     "lint": "prettier -c ./src/**/*.ts",
     "watch": "tsc -w --preserveWatchOutput",
     "test": "pnpm clean && pnpm build && jest",
