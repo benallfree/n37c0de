@@ -36,7 +36,7 @@
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "bl": "^4.0.4",
-    "callem": "^0.0.1",
+    "callem": "github:benallfree/callem#master",
     "georedis": "github:benallfree/node-georedis#typescript",
     "smart-buffer": "^4.1.0"
   },
@@ -60,5 +60,11 @@
     "plugins": [
       "./node_modules/prettier-plugin-organize-imports"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "callem": "link:../callem",
+      "georedis": "link:../node-georedis"
+    }
   }
 }
